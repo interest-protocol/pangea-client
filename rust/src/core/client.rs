@@ -4,11 +4,13 @@ use futures::StreamExt;
 use super::{
     error::ResponseError,
     provider::{
-        BtcProvider, ChainProvider, CurveProvider, Erc20Provider, FuelProvider, Provider,
-        StreamResponse, UniswapV2Provider, UniswapV3Provider,
+        BtcProvider, ChainProvider, CurveProvider, Erc20Provider, FuelProvider, MoveProvider,
+        Provider, StreamResponse, UniswapV2Provider, UniswapV3Provider,
     },
     requests::{
-        blocks, btc, curve, erc20, fuel, logs, mira, transfers, txs, uniswap_v2, uniswap_v3,
+        blocks, btc, curve, erc20, fuel, interest, logs, mira,
+        movement::{GetMoveLogsRequest, GetMoveTxsRequest},
+        transfers, txs, uniswap_v2, uniswap_v3,
     },
     types::{format::Format, status::Status},
 };
@@ -436,6 +438,103 @@ where
 
         self.inner
             .get_fuel_mira_v1_swaps_by_format(request, format, deltas)
+            .await
+    }
+}
+
+#[async_trait]
+impl<T> MoveProvider for Client<T>
+where
+    T: MoveProvider + Send + Sync,
+{
+    async fn get_move_logs_by_format(
+        &self,
+        request: GetMoveLogsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_logs_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_logs_decoded_by_format(
+        &self,
+        request: GetMoveLogsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_logs_decoded_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_txs_by_format(
+        &self,
+        request: GetMoveTxsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_txs_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_interest_v1_tokens_by_format(
+        &self,
+        request: interest::GetTokensRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_interest_v1_tokens_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_interest_v1_pools_by_format(
+        &self,
+        request: interest::GetPoolsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_interest_v1_pools_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_interest_v1_liquidity_by_format(
+        &self,
+        request: interest::GetLiquidityRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_interest_v1_liquidity_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_interest_v1_swaps_by_format(
+        &self,
+        request: interest::GetSwapsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_interest_v1_swaps_by_format(request, format, deltas)
             .await
     }
 }

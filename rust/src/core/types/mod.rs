@@ -10,7 +10,9 @@ use strum::{AsRefStr, EnumString};
 
 pub mod format;
 pub mod fuel;
+pub mod interest;
 pub mod mira;
+pub mod movement;
 pub mod query;
 pub mod status;
 pub mod uniswap_v2;
@@ -47,6 +49,12 @@ pub enum ChainId {
     FUELTESTNET = 2_147_483_646,
     #[strum(to_string = "BTC")]
     BTC = 2_147_483_647,
+    #[strum(to_string = "BASE")]
+    BASE = 8453,
+    #[strum(to_string = "MOVEMENTBARDOCK")]
+    MOVEMENTBARDOCK = 2_147_483_642,
+    #[strum(to_string = "MOVEMENT")]
+    MOVEMENT = 2_147_483_643,
 }
 
 impl ChainId {
@@ -69,6 +77,9 @@ impl ChainId {
             Self::BTC => "BTC".to_string(),
             Self::BOB => "BOB".to_string(),
             Self::FUELTESTNET => "FUELTESTNET".to_string(),
+            Self::BASE => "BASE".to_string(),
+            Self::MOVEMENTBARDOCK => "MOVEMENTBARDOCK".to_string(),
+            Self::MOVEMENT => "MOVEMENT".to_string(),
         }
     }
 
@@ -87,6 +98,9 @@ impl ChainId {
             Self::BTC => "Bitcoin".to_string(),
             Self::BOB => "Bob".to_string(),
             Self::FUELTESTNET => "Fuel Testnet".to_string(),
+            Self::BASE => "Base".to_string(),
+            Self::MOVEMENTBARDOCK => "MOVEMENTBARDOCK".to_string(),
+            Self::MOVEMENT => "MOVEMENT".to_string(),
         }
     }
 }

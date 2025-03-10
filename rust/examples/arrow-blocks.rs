@@ -45,8 +45,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     while let Some(Ok(data)) = stream.next().await {
         let cursor = std::io::Cursor::new(data);
-        let mut reader = StreamReader::try_new(cursor, None)?;
-        while let Some(batch) = reader.next() {
+        let reader = StreamReader::try_new(cursor, None)?;
+        for batch in reader {
             let batch = batch?;
             print_batches(&[batch])?;
         }

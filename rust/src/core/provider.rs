@@ -10,7 +10,12 @@ use super::{
         blocks::GetBlocksRequest,
         btc::{GetBtcBlocksRequest, GetBtcTxsRequest},
         fuel::{GetFuelReceiptsRequest, GetSrc20, GetSrc7, GetUtxoRequest},
+        interest::{
+            GetLiquidityRequest, GetPoolsRequest as GetInterestPoolsRequest, GetSwapsRequest,
+            GetTokensRequest,
+        },
         logs::GetLogsRequest,
+        movement::{GetMoveLogsRequest, GetMoveTxsRequest},
         txs::GetTxsRequest,
         uniswap_v2::GetPairsRequest,
         uniswap_v3::GetPoolsRequest,
@@ -270,6 +275,71 @@ pub trait FuelProvider {
         if !chains
             .iter()
             .all(|chain| Self::FUEL_VALID_CHAINS.contains(chain))
+        {
+            return Err(Error::InvalidChainId(chains.clone()));
+        }
+
+        Ok(())
+    }
+}
+
+#[async_trait]
+pub trait MoveProvider {
+    const MOVE_VALID_CHAINS: [ChainId; 2] = [ChainId::MOVEMENT, ChainId::MOVEMENTBARDOCK];
+
+    async fn get_move_logs_by_format(
+        &self,
+        request: GetMoveLogsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_logs_decoded_by_format(
+        &self,
+        request: GetMoveLogsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_txs_by_format(
+        &self,
+        request: GetMoveTxsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_interest_v1_tokens_by_format(
+        &self,
+        request: GetTokensRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_interest_v1_pools_by_format(
+        &self,
+        request: GetInterestPoolsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_interest_v1_liquidity_by_format(
+        &self,
+        request: GetLiquidityRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_interest_v1_swaps_by_format(
+        &self,
+        request: GetSwapsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    fn check_chain(&self, chains: &HashSet<ChainId>) -> Result<()> {
+        if !chains
+            .iter()
+            .all(|chain| Self::MOVE_VALID_CHAINS.contains(chain))
         {
             return Err(Error::InvalidChainId(chains.clone()));
         }

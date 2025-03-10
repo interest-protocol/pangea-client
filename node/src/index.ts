@@ -55,6 +55,10 @@ const methodsToEndpointsWithParams = [
   ["get_fuel_mira_v1_pools", "getMiraV1Pools"],
   ["get_fuel_mira_v1_liquidity", "getMiraV1Liqudity"],
   ["get_fuel_mira_v1_swaps", "getMiraV1Swaps"],
+  ["get_move_interest_v1_tokens", "getInterestV1Tokens"],
+  ["get_move_interest_v1_pools", "getInterestV1Pools"],
+  ["get_move_interest_v1_liquidity", "getInterestV1Liqudity"],
+  ["get_move_interest_v1_swaps", "getInterestV1Swaps"],
 ] as const;
 
 type MethodWithParams = (typeof methodsToEndpointsWithParams)[number][0];
