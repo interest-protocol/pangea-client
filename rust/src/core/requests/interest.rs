@@ -9,59 +9,6 @@ use crate::{core::types::ChainId, query::Bound, utils::serialize_comma_separated
 #[allow(non_snake_case)]
 #[derive(Clone, Deserialize, Serialize, Debug)]
 #[serde(deny_unknown_fields)]
-pub struct GetTokensRequest {
-    #[serde(default = "default_chains")]
-    #[serde(
-        serialize_with = "serialize_comma_separated",
-        skip_serializing_if = "HashSet::is_empty"
-    )]
-    pub chains: HashSet<ChainId>,
-
-    // Inclusive lower bound if is Some for block number
-    #[serde(default)]
-    pub from_block: Bound,
-    // Inclusive upper bound if is Some for block number
-    #[serde(default)]
-    pub to_block: Bound,
-
-    #[serde(default)]
-    #[serde(
-        serialize_with = "serialize_comma_separated",
-        skip_serializing_if = "HashSet::is_empty"
-    )]
-    pub address__in: HashSet<H256>,
-
-    #[serde(default)]
-    #[serde(
-        serialize_with = "serialize_comma_separated",
-        skip_serializing_if = "HashSet::is_empty"
-    )]
-    pub name__in: HashSet<String>,
-
-    #[serde(default)]
-    #[serde(
-        serialize_with = "serialize_comma_separated",
-        skip_serializing_if = "HashSet::is_empty"
-    )]
-    pub symbol__in: HashSet<String>,
-}
-
-impl Default for GetTokensRequest {
-    fn default() -> Self {
-        Self {
-            chains: default_chains(),
-            from_block: Bound::default(),
-            to_block: Bound::default(),
-            address__in: HashSet::new(),
-            name__in: HashSet::new(),
-            symbol__in: HashSet::new(),
-        }
-    }
-}
-
-#[allow(non_snake_case)]
-#[derive(Clone, Deserialize, Serialize, Debug)]
-#[serde(deny_unknown_fields)]
 pub struct GetPoolsRequest {
     #[serde(default = "default_chains")]
     #[serde(

@@ -10,7 +10,7 @@ exclude = [
 ] # when publishing
 
 name = "pangea-client"
-version = "0.3.7"
+version = "0.3.8"
 edition = "2021"
 description = "Client SDK for Pangea The Open Index Protocol"
 keywords = ["sdk", "blockchain", "indexing", "uniswap"]

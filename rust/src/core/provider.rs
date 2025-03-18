@@ -12,10 +12,11 @@ use super::{
         fuel::{GetFuelReceiptsRequest, GetSrc20, GetSrc7, GetUtxoRequest},
         interest::{
             GetLiquidityRequest, GetPoolsRequest as GetInterestPoolsRequest, GetSwapsRequest,
-            GetTokensRequest,
         },
         logs::GetLogsRequest,
-        movement::{GetMoveLogsRequest, GetMoveTxsRequest},
+        movement::{
+            GetMoveLogsRequest, GetMoveReceiptsRequest, GetMoveTxsRequest, GetTokensRequest,
+        },
         txs::GetTxsRequest,
         uniswap_v2::GetPairsRequest,
         uniswap_v3::GetPoolsRequest,
@@ -308,7 +309,21 @@ pub trait MoveProvider {
         deltas: bool,
     ) -> StreamResponse<Vec<u8>>;
 
-    async fn get_move_interest_v1_tokens_by_format(
+    async fn get_move_receipts_by_format(
+        &self,
+        request: GetMoveReceiptsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_receipts_decoded_by_format(
+        &self,
+        request: GetMoveReceiptsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_fa_tokens_by_format(
         &self,
         request: GetTokensRequest,
         format: Format,

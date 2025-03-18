@@ -5,7 +5,6 @@ use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use futures::{StreamExt, TryStreamExt};
 use reqwest::header;
 
-use crate::requests::interest::{GetLiquidityRequest, GetSwapsRequest, GetTokensRequest};
 use crate::{
     core::{
         error::{Error, Result},
@@ -16,9 +15,8 @@ use crate::{
         Provider, StreamResponse, UniswapV2Provider, UniswapV3Provider,
     },
     requests::{
-        blocks, btc, curve, erc20, fuel, logs, mira,
-        movement::{GetMoveLogsRequest, GetMoveTxsRequest},
-        transfers, txs, uniswap_v2, uniswap_v3,
+        blocks, btc, curve, erc20, fuel, interest, logs, mira, movement, transfers, txs,
+        uniswap_v2, uniswap_v3,
     },
     ChainId,
 };
@@ -458,7 +456,9 @@ impl FuelProvider for HttpProvider {
 const MOVE_LOGS_PATH: &str = "logs";
 const MOVE_LOGS_DECODED_PATH: &str = "logs/decoded";
 const MOVE_TRANSACTIONS_PATH: &str = "transactions";
-const MOVE_INTEREST_V1_TOKENS_PATH: &str = "interest/v1/tokens";
+const MOVE_RECEIPTS_PATH: &str = "receipts";
+const MOVE_RECEIPTS_DECODED_PATH: &str = "receipts/decoded";
+const MOVE_FA_TOKENS_PATH: &str = "fa-tokens";
 const MOVE_INTEREST_V1_POOLS_PATH: &str = "interest/v1/pools";
 const MOVE_INTEREST_V1_LIQUIDITY_PATH: &str = "interest/v1/liquidity";
 const MOVE_INTEREST_V1_SWAPS_PATH: &str = "interest/v1/swaps";
@@ -466,7 +466,7 @@ const MOVE_INTEREST_V1_SWAPS_PATH: &str = "interest/v1/swaps";
 impl MoveProvider for HttpProvider {
     async fn get_move_logs_by_format(
         &self,
-        request: GetMoveLogsRequest,
+        request: movement::GetMoveLogsRequest,
         format: Format,
         _: bool,
     ) -> StreamResponse<Vec<u8>> {
@@ -476,7 +476,7 @@ impl MoveProvider for HttpProvider {
 
     async fn get_move_logs_decoded_by_format(
         &self,
-        request: GetMoveLogsRequest,
+        request: movement::GetMoveLogsRequest,
         format: Format,
         _: bool,
     ) -> StreamResponse<Vec<u8>> {
@@ -486,7 +486,7 @@ impl MoveProvider for HttpProvider {
 
     async fn get_move_txs_by_format(
         &self,
-        request: GetMoveTxsRequest,
+        request: movement::GetMoveTxsRequest,
         format: Format,
         _: bool,
     ) -> StreamResponse<Vec<u8>> {
@@ -494,19 +494,39 @@ impl MoveProvider for HttpProvider {
         self.request(url, request, format).await
     }
 
-    async fn get_move_interest_v1_tokens_by_format(
+    async fn get_move_receipts_by_format(
         &self,
-        request: GetTokensRequest,
+        request: movement::GetMoveReceiptsRequest,
+        format: Format,
+        _: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        let url = self.url(MOVE_RECEIPTS_PATH)?;
+        self.request(url, request, format).await
+    }
+
+    async fn get_move_receipts_decoded_by_format(
+        &self,
+        request: movement::GetMoveReceiptsRequest,
+        format: Format,
+        _: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        let url = self.url(MOVE_RECEIPTS_DECODED_PATH)?;
+        self.request(url, request, format).await
+    }
+
+    async fn get_move_fa_tokens_by_format(
+        &self,
+        request: movement::GetTokensRequest,
         format: Format,
         _deltas: bool,
     ) -> StreamResponse<Vec<u8>> {
-        let url = self.url(MOVE_INTEREST_V1_TOKENS_PATH)?;
+        let url = self.url(MOVE_FA_TOKENS_PATH)?;
         self.request(url, request, format).await
     }
 
     async fn get_move_interest_v1_pools_by_format(
         &self,
-        request: crate::core::requests::interest::GetPoolsRequest,
+        request: interest::GetPoolsRequest,
         format: Format,
         _deltas: bool,
     ) -> StreamResponse<Vec<u8>> {
@@ -516,7 +536,7 @@ impl MoveProvider for HttpProvider {
 
     async fn get_move_interest_v1_liquidity_by_format(
         &self,
-        request: GetLiquidityRequest,
+        request: interest::GetLiquidityRequest,
         format: Format,
         _deltas: bool,
     ) -> StreamResponse<Vec<u8>> {
@@ -526,7 +546,7 @@ impl MoveProvider for HttpProvider {
 
     async fn get_move_interest_v1_swaps_by_format(
         &self,
-        request: GetSwapsRequest,
+        request: interest::GetSwapsRequest,
         format: Format,
         _deltas: bool,
     ) -> StreamResponse<Vec<u8>> {

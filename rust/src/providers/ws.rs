@@ -26,9 +26,8 @@ use crate::{
         Provider, StreamResponse, UniswapV2Provider, UniswapV3Provider,
     },
     requests::{
-        blocks, btc, curve, erc20, fuel, interest, logs, mira,
-        movement::{GetMoveLogsRequest, GetMoveTxsRequest},
-        transfers, txs, uniswap_v2, uniswap_v3,
+        blocks, btc, curve, erc20, fuel, interest, logs, mira, movement, transfers, txs,
+        uniswap_v2, uniswap_v3,
     },
     ChainId,
 };
@@ -450,7 +449,7 @@ impl FuelProvider for WsProvider {
 impl MoveProvider for WsProvider {
     async fn get_move_logs_by_format(
         &self,
-        request: GetMoveLogsRequest,
+        request: movement::GetMoveLogsRequest,
         format: Format,
         deltas: bool,
     ) -> StreamResponse<Vec<u8>> {
@@ -460,7 +459,7 @@ impl MoveProvider for WsProvider {
 
     async fn get_move_logs_decoded_by_format(
         &self,
-        request: GetMoveLogsRequest,
+        request: movement::GetMoveLogsRequest,
         format: Format,
         deltas: bool,
     ) -> StreamResponse<Vec<u8>> {
@@ -470,7 +469,7 @@ impl MoveProvider for WsProvider {
 
     async fn get_move_txs_by_format(
         &self,
-        request: GetMoveTxsRequest,
+        request: movement::GetMoveTxsRequest,
         format: Format,
         deltas: bool,
     ) -> StreamResponse<Vec<u8>> {
@@ -478,13 +477,33 @@ impl MoveProvider for WsProvider {
             .await
     }
 
-    async fn get_move_interest_v1_tokens_by_format(
+    async fn get_move_receipts_by_format(
         &self,
-        request: interest::GetTokensRequest,
+        request: movement::GetMoveReceiptsRequest,
         format: Format,
         deltas: bool,
     ) -> StreamResponse<Vec<u8>> {
-        self.request(Operation::GetInterestV1Tokens, request, format, deltas)
+        self.request(Operation::GetReceipts, request, format, deltas)
+            .await
+    }
+
+    async fn get_move_receipts_decoded_by_format(
+        &self,
+        request: movement::GetMoveReceiptsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.request(Operation::GetDecodedReceipts, request, format, deltas)
+            .await
+    }
+
+    async fn get_move_fa_tokens_by_format(
+        &self,
+        request: movement::GetTokensRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.request(Operation::GetFaTokens, request, format, deltas)
             .await
     }
 
@@ -715,6 +734,7 @@ pub enum Operation {
     GetLogs,
     GetTxs,
     GetReceipts,
+    GetDecodedReceipts,
     GetDecodedLogs,
     GetMessages,
     GetUnspentUtxos,
@@ -738,7 +758,7 @@ pub enum Operation {
     GetMiraV1Pools,
     GetMiraV1Liqudity,
     GetMiraV1Swaps,
-    GetInterestV1Tokens,
+    GetFaTokens,
     GetInterestV1Pools,
     GetInterestV1Liqudity,
     GetInterestV1Swaps,
