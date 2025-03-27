@@ -226,6 +226,59 @@ impl Default for GetTokensRequest {
     }
 }
 
+#[allow(non_snake_case)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct GetBalancesRequest {
+    #[serde(
+        default = "default_chains",
+        serialize_with = "serialize_comma_separated",
+        skip_serializing_if = "HashSet::is_empty"
+    )]
+    pub chains: HashSet<ChainId>,
+
+    // Inclusive lower bound if is Some for block number
+    #[serde(alias = "from_version", default)]
+    pub from_block: Bound,
+    // Inclusive upper bound if is Some for block number
+    #[serde(alias = "to_version", default)]
+    pub to_block: Bound,
+
+    #[serde(
+        default,
+        serialize_with = "serialize_comma_separated",
+        skip_serializing_if = "HashSet::is_empty"
+    )]
+    pub address__in: HashSet<H256>,
+
+    #[serde(
+        default,
+        serialize_with = "serialize_comma_separated",
+        skip_serializing_if = "HashSet::is_empty"
+    )]
+    pub object__in: HashSet<Option<H256>>,
+
+    #[serde(
+        default,
+        serialize_with = "serialize_comma_separated",
+        skip_serializing_if = "HashSet::is_empty"
+    )]
+    pub asset__in: HashSet<H256>,
+}
+
+impl Default for GetBalancesRequest {
+    fn default() -> Self {
+        Self {
+            chains: default_chains(),
+            from_block: Bound::default(),
+            to_block: Bound::default(),
+            address__in: HashSet::new(),
+            object__in: HashSet::new(),
+            asset__in: HashSet::new(),
+        }
+    }
+}
+
 pub fn default_chains() -> HashSet<ChainId> {
     HashSet::from([ChainId::MOVEMENT])
 }

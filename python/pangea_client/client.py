@@ -49,6 +49,10 @@ methods_to_endpoints_with_params = [
     ("get_move_interest_v1_pools", "getInterestV1Pools"),
     ("get_move_interest_v1_liquidity", "getInterestV1Liqudity"),
     ("get_move_interest_v1_swaps", "getInterestV1Swaps"),
+    ("get_move_arche_collaterals", "getArcheCollaterals"),
+    ("get_move_arche_loans", "getArcheLoans"),
+    ("get_move_pyth", "getPyth"),
+    ("get_move_balances", "getBalances"),
 ]
 
 

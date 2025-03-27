@@ -8,6 +8,7 @@ use serde::{
 };
 use strum::{AsRefStr, EnumString};
 
+pub mod arche;
 pub mod format;
 pub mod fuel;
 pub mod interest;

@@ -16,6 +16,9 @@ use tracing::{debug, error, warn};
 use tungstenite::{client::IntoClientRequest, protocol::WebSocketConfig, Message};
 use uuid::Uuid;
 
+use crate::requests::arche::{GetCollateralsRequest, GetLoansRequest};
+use crate::requests::movement::GetBalancesRequest;
+use crate::requests::pyth;
 use crate::{
     core::{
         error::{Error, ResponseError, Result},
@@ -536,6 +539,46 @@ impl MoveProvider for WsProvider {
         self.request(Operation::GetInterestV1Swaps, request, format, deltas)
             .await
     }
+
+    async fn get_move_arche_collaterals_by_format(
+        &self,
+        request: GetCollateralsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.request(Operation::GetArcheCollaterals, request, format, deltas)
+            .await
+    }
+
+    async fn get_move_arche_loans_by_format(
+        &self,
+        request: GetLoansRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.request(Operation::GetArcheLoans, request, format, deltas)
+            .await
+    }
+
+    async fn get_move_pyth_by_format(
+        &self,
+        request: pyth::GetPricesRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.request(Operation::GetPyth, request, format, deltas)
+            .await
+    }
+
+    async fn get_move_balances_by_format(
+        &self,
+        request: GetBalancesRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.request(Operation::GetBalances, request, format, deltas)
+            .await
+    }
 }
 
 #[async_trait]
@@ -762,6 +805,10 @@ pub enum Operation {
     GetInterestV1Pools,
     GetInterestV1Liqudity,
     GetInterestV1Swaps,
+    GetArcheCollaterals,
+    GetArcheLoans,
+    GetPyth,
+    GetBalances,
 }
 
 #[derive(Debug, Clone, Deserialize)]

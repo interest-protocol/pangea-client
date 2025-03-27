@@ -1,3 +1,4 @@
+pub mod arche;
 pub mod blocks;
 pub mod btc;
 pub mod curve;
@@ -7,6 +8,7 @@ pub mod interest;
 pub mod logs;
 pub mod mira;
 pub mod movement;
+pub mod pyth;
 pub mod transfers;
 pub mod txs;
 pub mod uniswap_v2;

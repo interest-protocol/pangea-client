@@ -13,6 +13,9 @@ use super::{
     },
     types::{format::Format, status::Status},
 };
+use crate::requests::arche::{GetCollateralsRequest, GetLoansRequest};
+use crate::requests::movement::GetBalancesRequest;
+use crate::requests::pyth;
 use crate::{Operation, WsProvider};
 
 pub struct Client<T> {
@@ -560,6 +563,58 @@ where
 
         self.inner
             .get_move_interest_v1_swaps_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_arche_collaterals_by_format(
+        &self,
+        request: GetCollateralsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_arche_collaterals_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_arche_loans_by_format(
+        &self,
+        request: GetLoansRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_arche_loans_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_pyth_by_format(
+        &self,
+        request: pyth::GetPricesRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_pyth_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_balances_by_format(
+        &self,
+        request: GetBalancesRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_balances_by_format(request, format, deltas)
             .await
     }
 }

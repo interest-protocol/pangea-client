@@ -5,6 +5,9 @@ use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use futures::{StreamExt, TryStreamExt};
 use reqwest::header;
 
+use crate::requests::arche::{GetCollateralsRequest, GetLoansRequest};
+use crate::requests::movement::GetBalancesRequest;
+use crate::requests::pyth;
 use crate::{
     core::{
         error::{Error, Result},
@@ -462,6 +465,10 @@ const MOVE_FA_TOKENS_PATH: &str = "fa-tokens";
 const MOVE_INTEREST_V1_POOLS_PATH: &str = "interest/v1/pools";
 const MOVE_INTEREST_V1_LIQUIDITY_PATH: &str = "interest/v1/liquidity";
 const MOVE_INTEREST_V1_SWAPS_PATH: &str = "interest/v1/swaps";
+const MOVE_ARCHE_COLLATERALS_PATH: &str = "arche/collaterals";
+const MOVE_ARCHE_LOANS_PATH: &str = "arche/loans";
+const MOVE_PYTH_PATH: &str = "pyth";
+const MOVE_BALANCES_PATH: &str = "balances";
 #[async_trait]
 impl MoveProvider for HttpProvider {
     async fn get_move_logs_by_format(
@@ -551,6 +558,46 @@ impl MoveProvider for HttpProvider {
         _deltas: bool,
     ) -> StreamResponse<Vec<u8>> {
         let url = self.url(MOVE_INTEREST_V1_SWAPS_PATH)?;
+        self.request(url, request, format).await
+    }
+
+    async fn get_move_arche_collaterals_by_format(
+        &self,
+        request: GetCollateralsRequest,
+        format: Format,
+        _deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        let url = self.url(MOVE_ARCHE_COLLATERALS_PATH)?;
+        self.request(url, request, format).await
+    }
+
+    async fn get_move_arche_loans_by_format(
+        &self,
+        request: GetLoansRequest,
+        format: Format,
+        _deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        let url = self.url(MOVE_ARCHE_LOANS_PATH)?;
+        self.request(url, request, format).await
+    }
+
+    async fn get_move_pyth_by_format(
+        &self,
+        request: pyth::GetPricesRequest,
+        format: Format,
+        _deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        let url = self.url(MOVE_PYTH_PATH)?;
+        self.request(url, request, format).await
+    }
+
+    async fn get_move_balances_by_format(
+        &self,
+        request: GetBalancesRequest,
+        format: Format,
+        _deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        let url = self.url(MOVE_BALANCES_PATH)?;
         self.request(url, request, format).await
     }
 }

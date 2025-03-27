@@ -7,6 +7,7 @@ use super::{
     error::Result,
     requests::{
         self,
+        arche::{GetCollateralsRequest, GetLoansRequest},
         blocks::GetBlocksRequest,
         btc::{GetBtcBlocksRequest, GetBtcTxsRequest},
         fuel::{GetFuelReceiptsRequest, GetSrc20, GetSrc7, GetUtxoRequest},
@@ -15,8 +16,10 @@ use super::{
         },
         logs::GetLogsRequest,
         movement::{
-            GetMoveLogsRequest, GetMoveReceiptsRequest, GetMoveTxsRequest, GetTokensRequest,
+            GetBalancesRequest, GetMoveLogsRequest, GetMoveReceiptsRequest, GetMoveTxsRequest,
+            GetTokensRequest,
         },
+        pyth,
         txs::GetTxsRequest,
         uniswap_v2::GetPairsRequest,
         uniswap_v3::GetPoolsRequest,
@@ -347,6 +350,34 @@ pub trait MoveProvider {
     async fn get_move_interest_v1_swaps_by_format(
         &self,
         request: GetSwapsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_arche_collaterals_by_format(
+        &self,
+        request: GetCollateralsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_arche_loans_by_format(
+        &self,
+        request: GetLoansRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_pyth_by_format(
+        &self,
+        request: pyth::GetPricesRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_balances_by_format(
+        &self,
+        request: GetBalancesRequest,
         format: Format,
         deltas: bool,
     ) -> StreamResponse<Vec<u8>>;
