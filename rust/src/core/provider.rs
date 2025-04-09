@@ -7,7 +7,7 @@ use super::{
     error::Result,
     requests::{
         self,
-        arche::{GetCollateralsRequest, GetLoansRequest},
+        arche::{GetCollateralsRequest, GetLoansRequest, GetPositionsRequest},
         blocks::GetBlocksRequest,
         btc::{GetBtcBlocksRequest, GetBtcTxsRequest},
         fuel::{GetFuelReceiptsRequest, GetSrc20, GetSrc7, GetUtxoRequest},
@@ -364,6 +364,13 @@ pub trait MoveProvider {
     async fn get_move_arche_loans_by_format(
         &self,
         request: GetLoansRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_arche_positions_by_format(
+        &self,
+        request: GetPositionsRequest,
         format: Format,
         deltas: bool,
     ) -> StreamResponse<Vec<u8>>;

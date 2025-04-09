@@ -126,6 +126,34 @@ impl Default for GetLoansRequest {
     }
 }
 
+#[allow(non_snake_case)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct GetPositionsRequest {
+    #[serde(
+        default = "default_chains",
+        serialize_with = "serialize_comma_separated"
+    )]
+    pub chains: HashSet<ChainId>,
+
+    // Inclusive lower bound if is Some for block number
+    #[serde(default)]
+    pub from_block: Bound,
+    // Inclusive upper bound if is Some for block number
+    #[serde(default)]
+    pub to_block: Bound,
+}
+
+impl Default for GetPositionsRequest {
+    fn default() -> Self {
+        Self {
+            chains: default_chains(),
+            from_block: Bound::default(),
+            to_block: Bound::default(),
+        }
+    }
+}
+
 fn default_chains() -> HashSet<ChainId> {
     HashSet::from([ChainId::MOVEMENT])
 }

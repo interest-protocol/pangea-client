@@ -16,7 +16,7 @@ use tracing::{debug, error, warn};
 use tungstenite::{client::IntoClientRequest, protocol::WebSocketConfig, Message};
 use uuid::Uuid;
 
-use crate::requests::arche::{GetCollateralsRequest, GetLoansRequest};
+use crate::requests::arche::{GetCollateralsRequest, GetLoansRequest, GetPositionsRequest};
 use crate::requests::movement::GetBalancesRequest;
 use crate::requests::pyth;
 use crate::{
@@ -560,6 +560,16 @@ impl MoveProvider for WsProvider {
             .await
     }
 
+    async fn get_move_arche_positions_by_format(
+        &self,
+        request: GetPositionsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.request(Operation::GetArchePositions, request, format, deltas)
+            .await
+    }
+
     async fn get_move_pyth_by_format(
         &self,
         request: pyth::GetPricesRequest,
@@ -743,13 +753,10 @@ impl BackgroundWorker {
             _ => Err(Error::UnexpectedMessageFormat),
         };
 
-        if let std::collections::hash_map::Entry::Occupied(mut occupied) =
-            self.subscriptions.entry(id.0)
-        {
-            if let Err(err) = occupied.get_mut().send(msg).await {
-                return Err(Error::Custom(
-                    format!("failed to send message: {err:?}").into(),
-                ));
+        if let Some(sender) = self.subscriptions.get_mut(&id.0) {
+            if sender.send(msg).await.is_err() {
+                debug!(id = %id.0, "Request was canceled");
+                self.subscriptions.remove(&id.0);
             }
         }
 
@@ -807,6 +814,7 @@ pub enum Operation {
     GetInterestV1Swaps,
     GetArcheCollaterals,
     GetArcheLoans,
+    GetArchePositions,
     GetPyth,
     GetBalances,
 }

@@ -5,7 +5,7 @@ use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use futures::{StreamExt, TryStreamExt};
 use reqwest::header;
 
-use crate::requests::arche::{GetCollateralsRequest, GetLoansRequest};
+use crate::requests::arche::{GetCollateralsRequest, GetLoansRequest, GetPositionsRequest};
 use crate::requests::movement::GetBalancesRequest;
 use crate::requests::pyth;
 use crate::{
@@ -467,6 +467,7 @@ const MOVE_INTEREST_V1_LIQUIDITY_PATH: &str = "interest/v1/liquidity";
 const MOVE_INTEREST_V1_SWAPS_PATH: &str = "interest/v1/swaps";
 const MOVE_ARCHE_COLLATERALS_PATH: &str = "arche/collaterals";
 const MOVE_ARCHE_LOANS_PATH: &str = "arche/loans";
+const MOVE_ARCHE_POSITIONS_PATH: &str = "arche/positions";
 const MOVE_PYTH_PATH: &str = "pyth";
 const MOVE_BALANCES_PATH: &str = "balances";
 #[async_trait]
@@ -578,6 +579,16 @@ impl MoveProvider for HttpProvider {
         _deltas: bool,
     ) -> StreamResponse<Vec<u8>> {
         let url = self.url(MOVE_ARCHE_LOANS_PATH)?;
+        self.request(url, request, format).await
+    }
+
+    async fn get_move_arche_positions_by_format(
+        &self,
+        request: GetPositionsRequest,
+        format: Format,
+        _deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        let url = self.url(MOVE_ARCHE_POSITIONS_PATH)?;
         self.request(url, request, format).await
     }
 

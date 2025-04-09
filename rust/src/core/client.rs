@@ -13,7 +13,7 @@ use super::{
     },
     types::{format::Format, status::Status},
 };
-use crate::requests::arche::{GetCollateralsRequest, GetLoansRequest};
+use crate::requests::arche::{GetCollateralsRequest, GetLoansRequest, GetPositionsRequest};
 use crate::requests::movement::GetBalancesRequest;
 use crate::requests::pyth;
 use crate::{Operation, WsProvider};
@@ -589,6 +589,19 @@ where
 
         self.inner
             .get_move_arche_loans_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_arche_positions_by_format(
+        &self,
+        request: GetPositionsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_arche_positions_by_format(request, format, deltas)
             .await
     }
 
