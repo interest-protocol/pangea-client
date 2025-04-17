@@ -459,8 +459,10 @@ impl FuelProvider for HttpProvider {
 const MOVE_LOGS_PATH: &str = "logs";
 const MOVE_LOGS_DECODED_PATH: &str = "logs/decoded";
 const MOVE_TRANSACTIONS_PATH: &str = "transactions";
+const MOVE_TRANSACTIONS_DECODED_PATH: &str = "transactions/decoded";
 const MOVE_RECEIPTS_PATH: &str = "receipts";
 const MOVE_RECEIPTS_DECODED_PATH: &str = "receipts/decoded";
+const MOVE_MODULES_PATH: &str = "modules";
 const MOVE_FA_TOKENS_PATH: &str = "fa-tokens";
 const MOVE_INTEREST_V1_POOLS_PATH: &str = "interest/v1/pools";
 const MOVE_INTEREST_V1_LIQUIDITY_PATH: &str = "interest/v1/liquidity";
@@ -502,6 +504,16 @@ impl MoveProvider for HttpProvider {
         self.request(url, request, format).await
     }
 
+    async fn get_move_txs_decoded_by_format(
+        &self,
+        request: movement::GetMoveTxsRequest,
+        format: Format,
+        _: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        let url = self.url(MOVE_TRANSACTIONS_DECODED_PATH)?;
+        self.request(url, request, format).await
+    }
+
     async fn get_move_receipts_by_format(
         &self,
         request: movement::GetMoveReceiptsRequest,
@@ -519,6 +531,16 @@ impl MoveProvider for HttpProvider {
         _: bool,
     ) -> StreamResponse<Vec<u8>> {
         let url = self.url(MOVE_RECEIPTS_DECODED_PATH)?;
+        self.request(url, request, format).await
+    }
+
+    async fn get_move_modules_by_format(
+        &self,
+        request: movement::GetMoveReceiptsRequest,
+        format: Format,
+        _: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        let url = self.url(MOVE_MODULES_PATH)?;
         self.request(url, request, format).await
     }
 

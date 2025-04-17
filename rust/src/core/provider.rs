@@ -312,6 +312,13 @@ pub trait MoveProvider {
         deltas: bool,
     ) -> StreamResponse<Vec<u8>>;
 
+    async fn get_move_txs_decoded_by_format(
+        &self,
+        request: GetMoveTxsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
     async fn get_move_receipts_by_format(
         &self,
         request: GetMoveReceiptsRequest,
@@ -320,6 +327,13 @@ pub trait MoveProvider {
     ) -> StreamResponse<Vec<u8>>;
 
     async fn get_move_receipts_decoded_by_format(
+        &self,
+        request: GetMoveReceiptsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>>;
+
+    async fn get_move_modules_by_format(
         &self,
         request: GetMoveReceiptsRequest,
         format: Format,

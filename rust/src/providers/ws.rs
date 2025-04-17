@@ -480,6 +480,16 @@ impl MoveProvider for WsProvider {
             .await
     }
 
+    async fn get_move_txs_decoded_by_format(
+        &self,
+        request: movement::GetMoveTxsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.request(Operation::GetDecodedTxs, request, format, deltas)
+            .await
+    }
+
     async fn get_move_receipts_by_format(
         &self,
         request: movement::GetMoveReceiptsRequest,
@@ -497,6 +507,16 @@ impl MoveProvider for WsProvider {
         deltas: bool,
     ) -> StreamResponse<Vec<u8>> {
         self.request(Operation::GetDecodedReceipts, request, format, deltas)
+            .await
+    }
+
+    async fn get_move_modules_by_format(
+        &self,
+        request: movement::GetMoveReceiptsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.request(Operation::GetDecodedModules, request, format, deltas)
             .await
     }
 
@@ -783,9 +803,11 @@ pub enum Operation {
     GetBlocks,
     GetLogs,
     GetTxs,
+    GetDecodedTxs,
     GetReceipts,
     GetDecodedReceipts,
     GetDecodedLogs,
+    GetDecodedModules,
     GetMessages,
     GetUnspentUtxos,
     GetUniswapV2Pairs,

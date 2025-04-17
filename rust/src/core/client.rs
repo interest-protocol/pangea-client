@@ -488,6 +488,19 @@ where
             .await
     }
 
+    async fn get_move_txs_decoded_by_format(
+        &self,
+        request: movement::GetMoveTxsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_txs_decoded_by_format(request, format, deltas)
+            .await
+    }
+
     async fn get_move_receipts_by_format(
         &self,
         request: movement::GetMoveReceiptsRequest,
@@ -498,6 +511,19 @@ where
 
         self.inner
             .get_move_receipts_by_format(request, format, deltas)
+            .await
+    }
+
+    async fn get_move_modules_by_format(
+        &self,
+        request: movement::GetMoveReceiptsRequest,
+        format: Format,
+        deltas: bool,
+    ) -> StreamResponse<Vec<u8>> {
+        self.check_chain(&request.chains)?;
+
+        self.inner
+            .get_move_modules_by_format(request, format, deltas)
             .await
     }
 
